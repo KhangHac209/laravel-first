@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- Blog Details Hero Begin -->
-    <section class="blog-details-hero set-bg" data-setbg="img/blog/details/details-hero.jpg">
+    <section class="blog-details-hero set-bg" data-setbg="{{ asset('asset/client/img/blog/details/details-hero.jpg') }}">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
