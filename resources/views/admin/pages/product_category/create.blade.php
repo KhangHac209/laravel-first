@@ -27,30 +27,42 @@
                     <div class="col-md-12">
                         <!-- general form elements -->
                         <div class="card card-primary">
+                            @session('message')
+                                <div class="text-success">{{ session('message') }}</div>
+                            @endsession
                             <div class="card-header">
                                 <h3 class="card-title">Product Category</h3>
                             </div>
                             <!-- /.card-header -->
                             <!-- form start -->
-                            <form role="form" method="post" action="http://127.0.0.1:8000/admin/product_category/store">
+                            <form role="form" method="post" action="{{ route('admin.product_category.store') }}">
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Email address</label>
-                                        <input type="email" name='email' class="form-control" id="exampleInputEmail1"
-                                            placeholder="Enter email">
+                                        <label for="exampleInputEmail1">Name</label>
+                                        <input type="text" value="{{ old('name') }}" name='name'
+                                            class="form-control" id="exampleInputEmail1" placeholder="Enter name">
+                                        @error('name')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputSlug">Slug</label>
-                                        <input type="text" name='slug' class="form-control" id="exampleInputSLug"
-                                            placeholder="Slug">
+                                        <input type="text" value="{{ old('slug') }}" name='slug'
+                                            class="form-control" id="exampleInputSLug" placeholder="Slug">
+                                        @error('slug')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputStatus">Status</label>
                                         <select name="status" id="">
                                             <option value="">----Please Select---</option>
-                                            <option value="1">Show</option>
-                                            <option value="0">Hide</option>
+                                            <option value="1" {{ old('status') == 1 ? 'selected' : '' }}>Show</option>
+                                            <option value="0" {{ old('status') == 0 ? 'selected' : '' }}>Hide</option>
                                         </select>
+                                        @error('status')
+                                            <span class="text-danger">{{ $message }}</span>
+                                        @enderror
 
                                     </div>
                                 </div>
@@ -64,7 +76,6 @@
                         </div>
                     </div>
                     <!--/.col (left) -->
-
                 </div>
                 <!-- /.row -->
             </div><!-- /.container-fluid -->
