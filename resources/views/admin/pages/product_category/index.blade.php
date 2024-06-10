@@ -29,6 +29,9 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
+                                    @session('message')
+                                        <div class="text-success">{{ session('message') }}</div>
+                                    @endsession
                                     <div class="card-header">
                                         <h3 class="card-title">Bordered Table</h3>
                                     </div>
@@ -40,6 +43,7 @@
                                                     <th style="width: 10px">#</th>
                                                     <th>Name</th>
                                                     <th>Slug</th>
+                                                    <th>Status</th>
                                                     <th style="width: 40px">Action</th>
                                                 </tr>
                                             </thead>
@@ -50,6 +54,17 @@
                                                         <td>{{ $data->name }}</td>
                                                         <td>{{ $data->slug }}</td>
                                                         <td>{{ $data->status ? 'Show' : 'Hide' }}</td>
+                                                        <td>
+                                                            <form action="{{ route('admin.product_category.destroy') }}"
+                                                                method="post">
+                                                                @csrf
+                                                                <input type="hidden" name="id"
+                                                                    value="{{ $data->id }}">
+                                                                <button class="btn btn-danger"
+                                                                    onclick="return confirm('Are u sure ?')"
+                                                                    type="submit">Delete</button>
+                                                            </form>
+                                                        </td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -58,14 +73,15 @@
                                     <!-- /.card-body -->
 
                                     <div class="card-footer clearfix">
-                                        <ul class="pagination pagination-sm m-0 float-right">
+                                        {{ $datas->links() }}
+                                        {{-- <ul class="pagination pagination-sm m-0 float-right">
                                             <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
                                             @for ($page = 1; $page <= $totalPages; $page++)
                                                 <li class="page-item"><a class="page-link"
                                                         href="?page={{ $page }}">{{ $page }}</a></li>
                                             @endfor
                                             <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                                        </ul>
+                                        </ul> --}}
                                     </div>
                                 </div>
                             </div>

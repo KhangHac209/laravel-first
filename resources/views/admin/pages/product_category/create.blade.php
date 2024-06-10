@@ -39,7 +39,7 @@
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Name</label>
-                                        <input type="text" value="{{ old('name') }}" name='name'
+                                        <input type="text" id="name" value="{{ old('name') }}" name='name'
                                             class="form-control" id="exampleInputEmail1" placeholder="Enter name">
                                         @error('name')
                                             <span class="text-danger">{{ $message }}</span>
@@ -47,7 +47,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleInputSlug">Slug</label>
-                                        <input type="text" value="{{ old('slug') }}" name='slug'
+                                        <input type="text" id="slug" value="{{ old('slug') }}" name='slug'
                                             class="form-control" id="exampleInputSLug" placeholder="Slug">
                                         @error('slug')
                                             <span class="text-danger">{{ $message }}</span>
@@ -82,4 +82,26 @@
         </section>
         <!-- /.content -->
     </div>
+@endsection
+@section('my-jquery')
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#name').on('keyup', function() {
+                var name = $(this).val();
+
+                $.ajax({
+                    method: 'POST', //method of form
+                    url: "{{ route('admin.product_category.slug') }}", //method of action
+                    data: {
+                        slug: name,
+                        _token: '{{ csrf_token() }}'
+                    }, //input name
+
+                    success: function(result) {
+                        $('#slug').val(result.slug);
+                    }
+                });
+            });
+        });
+    </script>
 @endsection
