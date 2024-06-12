@@ -34,6 +34,11 @@
                                     @endsession
                                     <div class="card-header">
                                         <h3 class="card-title">Bordered Table</h3>
+                                        <form method="post" action="" role="form">
+                                            <input type="text" id="name" value="" name='name'
+                                                class="form-control" id="exampleInputEmail1" placeholder="Enter name">
+                                            <button type="submit" class="btn btn-primary">Search</button>
+                                        </form>
                                     </div>
                                     <!-- /.card-header -->
                                     <div class="card-body">
@@ -44,6 +49,7 @@
                                                     <th>Name</th>
                                                     <th>Slug</th>
                                                     <th>Status</th>
+                                                    <th>Detail</th>
                                                     <th style="width: 40px">Action</th>
                                                 </tr>
                                             </thead>
@@ -55,11 +61,24 @@
                                                         <td>{{ $data->slug }}</td>
                                                         <td>{{ $data->status ? 'Show' : 'Hide' }}</td>
                                                         <td>
-                                                            <form action="{{ route('admin.product_category.destroy') }}"
+                                                            <a
+                                                                href="{{ route('admin.product_category.detail', ['productCategory' => $data->id]) }}">Detail</a>
+                                                        </td>
+                                                        <td>
+                                                            @if ($data->trashed())
+                                                                <form
+                                                                    action="{{ route('admin.product_category.restore', ['id' => $data->id]) }}"
+                                                                    method="post">
+                                                                    @csrf
+                                                                    <button class="btn btn-success"
+                                                                        onclick="return confirm('Are u sure ?')"
+                                                                        type="submit">Restore</button>
+                                                                </form>
+                                                            @endif
+                                                            <form
+                                                                action="{{ route('admin.product_category.destroy', ['productCategory' => $data->id]) }}"
                                                                 method="post">
                                                                 @csrf
-                                                                <input type="hidden" name="id"
-                                                                    value="{{ $data->id }}">
                                                                 <button class="btn btn-danger"
                                                                     onclick="return confirm('Are u sure ?')"
                                                                     type="submit">Delete</button>

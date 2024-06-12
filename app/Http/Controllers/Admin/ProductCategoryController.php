@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductCategoryStoreRequest;
+use App\Http\Requests\ProductCategoryUpdateRequest;
 use App\Models\ProductCategory;
+use Database\Factories\ProductFactory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -14,22 +17,22 @@ class ProductCategoryController extends Controller
     {
         return view('admin.pages.product_category.create');
     }
-    public function store(Request $request)
+    public function store(ProductCategoryStoreRequest $request)
     {
         // $name = $request->email;
         // $slug = $request->slug;
         // $status = $request->status;
 
-        $request->validate([
-            //'name' => ['required', 'min:3', 'max:255'],
-            'name' => 'required|min:3|max:255',
-            'slug' => 'required',
-            'status' => 'required',
-        ], [
-            'name.required' => 'Ten buoc phai nhap',
-            'name.min' => 'It nhat 3 ky tu',
-            'name.max' => 'Nhieu nhat 255 ky tu',
-        ]);
+        // $request->validate([
+        //     //'name' => ['required', 'min:3', 'max:255'],
+        //     'name' => 'required|min:3|max:255',
+        //     'slug' => 'required',
+        //     'status' => 'required',
+        // ], [
+        //     'name.required' => 'Ten buoc phai nhap',
+        //     'name.min' => 'It nhat 3 ky tu',
+        //     'name.max' => 'Nhieu nhat 255 ky tu',
+        // ]);
 
         //Fresh data
         $result = DB::table('product_category')->insert([
@@ -58,7 +61,10 @@ class ProductCategoryController extends Controller
 
         // //Query Builder
         // $datas = DB::table('product_category')->offset($offset)->limit($itemPerPage)->get();
-        $datas = DB::table('product_category')->paginate(config('myconfig.product_category.item_per_page'));
+        //$datas = DB::table('product_category')->paginate(config('myconfig.product_category.item_per_page'));
+
+        //Eloquent
+        $datas = ProductCategory::withTrashed()->paginate(config('myconfig.product_category.item_per_page')); //phan trang
 
         return view('admin.pages.product_category.index', ['datas' => $datas]);
     }
@@ -69,15 +75,58 @@ class ProductCategoryController extends Controller
 
         return response()->json(['slug' => $slug]);
     }
-    public function destroy(Request $request)
+    public function destroy(Request $request, ProductCategory $productCategory)
     {
-        $id = $request->id;
+        // $id = $request->id;
+        $result = $productCategory->delete();
         // $delete = DB::table('product_category')->where('id', $id)->delete();
 
         //Eloquent - ORM
-        $delete = ProductCategory::find($id)->delete();
+        // $delete = ProductCategory::find($id)->delete();
 
-        $message = $delete ? 'Xoa thanh cong' : 'Xoa that bai';
+        $message = $result ? 'Xoa thanh cong' : 'Xoa that bai';
+        return redirect()->route('admin.product_category.index')->with('message', $message);
+    }
+    public function restore(Request $request, int $id)
+    {
+        $id = $request->id;
+
+        //Eloquent
+        $data = ProductCategory::withTrashed()->find($id)->restore();
+        return redirect()->route('admin.product_category.index')->with('message', 'Khoi phuc thanh cong');
+    }
+    public function detail(Request $request, ProductCategory $productCategory)
+    {
+        return view('admin.pages.product_category.detail', ['data' => $productCategory]);
+    }
+
+    public function update(ProductCategoryUpdateRequest $request, ProductCategory $productCategory)
+    {
+        // $request->validate([
+        //     //'name' => ['required', 'min:3', 'max:255'],
+        //     'name' => 'required|min:3|max:255',
+        //     'slug' => 'required',
+        //     'status' => 'required',
+        // ], [
+        //     'name.required' => 'Ten buoc phai nhap',
+        //     'name.min' => 'It nhat 3 ky tu',
+        //     'name.max' => 'Nhieu nhat 255 ky tu',
+        // ]);
+
+        //Fresh data
+        $result = $productCategory->update([
+            'name' => $request->name,
+            'slug' => $request->slug,
+            'status' => $request->status,
+        ]);
+
+        // $result = DB::table('product_category')->where('id', $id)->update([
+        //     'name' => $request->name,
+        //     'slug' => $request->slug,
+        //     'status' => $request->status,
+        // ]);
+
+        $message = $result ? 'Update thanh cong' : 'That bai';
         return redirect()->route('admin.product_category.index')->with('message', $message);
     }
 }
