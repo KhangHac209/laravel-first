@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="{{ asset('asset/admin/plugins/summernote/summernote-bs4.css') }}">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+    <link rel="stylesheet" href="//cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -88,6 +90,8 @@
     <script src="{{ asset('asset/admin/dist/js/pages/dashboard.js') }}"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('asset/admin/dist/js/demo.js') }}"></script>
+
+    <script src="//cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
 
     @yield('my-jquery')
 </body>

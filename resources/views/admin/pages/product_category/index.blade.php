@@ -34,15 +34,23 @@
                                     @endsession
                                     <div class="card-header">
                                         <h3 class="card-title">Bordered Table</h3>
-                                        <form method="post" action="" role="form">
-                                            <input type="text" id="name" value="" name='name'
-                                                class="form-control" id="exampleInputEmail1" placeholder="Enter name">
+                                        <form method="get" action="{{ route('admin.product_category.index') }}"
+                                            role="form">
+                                            <input type="text" value="{{ request()->key ?? '' }}" id="key"
+                                                name='key' class="form-control" placeholder="Enter name">
+                                            <select name="sortBy" id="" class="form-control my-2">
+                                                <option value="">----Please Select----</option>
+                                                <option {{ request()->sortBy = 'oldest' ? 'selected' : '' }} value="oldest">
+                                                    Oldest</option>
+                                                <option {{ request()->sortBy = 'latest' ? 'selected' : '' }} value="latest">
+                                                    Latest</option>
+                                            </select>
                                             <button type="submit" class="btn btn-primary">Search</button>
                                         </form>
                                     </div>
                                     <!-- /.card-header -->
                                     <div class="card-body">
-                                        <table class="table table-bordered">
+                                        <table id="myTable" class="table table-bordered">
                                             <thead>
                                                 <tr>
                                                     <th style="width: 10px">#</th>
@@ -92,7 +100,7 @@
                                     <!-- /.card-body -->
 
                                     <div class="card-footer clearfix">
-                                        {{ $datas->links() }}
+                                        {{ $datas->withQueryString()->links() }}
                                         {{-- <ul class="pagination pagination-sm m-0 float-right">
                                             <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
                                             @for ($page = 1; $page <= $totalPages; $page++)
@@ -117,4 +125,12 @@
     </body>
 
     </html>
+@endsection
+
+@section('my-jquery')
+    <script>
+        $(document).ready(function() {
+            let table = new DataTable('#myTable');
+        })
+    </script>
 @endsection

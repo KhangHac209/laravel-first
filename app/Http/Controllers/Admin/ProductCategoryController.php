@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
+
 class ProductCategoryController extends Controller
 {
     public function create()
@@ -48,23 +49,27 @@ class ProductCategoryController extends Controller
     }
     public function index(Request $request)
     {
-        // $page = $request->page ?? 1;
-
-        // $totalRecords = DB::table('product_category')->count();
-
-        // // $itemPerPage = env('ITEM_PER_PAGE', 8);
-        // $itemPerPage = config('myconfig.product_category.item_per_page');
-
-        // $totalPages = (int)ceil($totalRecords / $itemPerPage);
-
-        // $offset = ($page - 1) * $itemPerPage;
-
-        // //Query Builder
-        // $datas = DB::table('product_category')->offset($offset)->limit($itemPerPage)->get();
-        //$datas = DB::table('product_category')->paginate(config('myconfig.product_category.item_per_page'));
+        $key = $request->key ?? null;
+        $sortBy = $request->sortBy ?? null;
 
         //Eloquent
-        $datas = ProductCategory::withTrashed()->paginate(config('myconfig.product_category.item_per_page')); //phan trang
+        if (is_null($key)) {
+            $datas = ProductCategory::withTrashed(); 
+        } else {
+            $datas = ProductCategory::withTrashed()
+                ->where('name', 'like', "%$key%")
+                ->orWhere('slug', 'like', "%$key%");
+        }
+
+        // if ($sortBy === 'latest') {
+        //     $datas->orderBy('created_at', 'desc');
+        // } else {
+        //     $datas->orderBy('created_at', 'asc');
+        // }
+
+        $datas->orderBy('created_at', $sortBy === 'latest' ? 'desc' : 'asc');
+
+        $datas = $datas->paginate(config('myconfig.product_category.item_per_page'));
 
         return view('admin.pages.product_category.index', ['datas' => $datas]);
     }
